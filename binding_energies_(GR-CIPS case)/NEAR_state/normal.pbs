@@ -1,0 +1,57 @@
+#!/bin/bash -l
+
+#SBATCH --job-name              c2-series
+#SBATCH --partition             mpi-normal
+#SBATCH --nodes                 1
+#SBATCH --tasks-per-node        40
+#SBATCH --time                  72:00:00
+#SBATCH --mem                   30G
+
+# asks SLURM to send the USR1 signal 120 seconds before end of the time limit
+#SBATCH --signal=B:USR1@120
+
+source /etc/profile
+source /etc/profile.d/modules.sh
+
+
+# define the handler function
+# note that this is not executed here, but rather
+# when the associated signal is sent
+your_cleanup_function()
+{
+    echo "function your_cleanup_function called at $(date)"
+    # do whatever cleanup you want here
+    pkill -u hejinyan
+}
+
+# call your_cleanup_function once we receive USR1 signal
+#module load gcc/7.5.0
+module load intel/18
+module load impi/18
+#module load vasp/5.4.4-huipan/intel/18
+module load vasp/6.1.1-huipan/intel/18
+#module load cuda/10.0.130
+#module load cmake/3.13.4
+#source /data/home/yc17806/code/cp2k-7.1/tools/toolchain/install/setup
+
+ulimit -s unlimited
+NP=$(($SLURM_NTASKS_PER_NODE * $SLURM_JOB_NUM_NODES))
+cd $SLURM_SUBMIT_DIR
+for j in *
+do
+if [ -d "$j" ]; then 
+ cd $j
+ echo $j
+ cd total
+ mpirun -n $NP vasp_std
+ echo "total done"
+ cd ../lower
+ mpirun -n $NP vasp_std
+ echo "lower done"
+ cd ../upper
+ mpirun -n $NP vasp_std
+ echo "upper done"
+ cd ../..
+fi
+done
+#/data/home/yc17806/code/vasp.6.1.1/bin/vasp_std #std

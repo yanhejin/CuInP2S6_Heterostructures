@@ -1,0 +1,32 @@
+#!/bin/bash
+#SBATCH -o slurm-%j.out
+#SBATCH -e slurm-%j.err
+#SBATCH --job-name              r1-m1
+#SBATCH --partition             intel48c
+#SBATCH --nodes                 1
+#SBATCH --tasks-per-node        48
+#SBATCH --time                  120:00:00
+#SBATCH --mem                   50G
+
+#singularity run -B $HOME /opt/singularity/cp2k-2024.1_openmpi_znver3_psmp.sif mpiexec cp2k -i ./celloptpbe.inp
+#source /home/yhj/soft/cp2k-2024.1/tools/toolchain/install/setup
+module load gcc/14.1.0
+module load openmpi/5.0.3
+module load 2024.2/tbb/2021.13
+module load 2024.2/compiler-rt/2024.2.0   
+module load 2024.2/mkl/2024.2
+
+ulimit -s unlimited
+NP=$(($SLURM_NTASKS_PER_NODE * $SLURM_JOB_NUM_NODES))
+cd $SLURM_SUBMIT_DIR
+
+conda activate virgo
+phonopy --nac -p band.conf
+phonopy-bandplot --gnuplot >> band1.dat
+phonopy --nac -p mesh.conf
+
+
+#mpirun -n $NP /home/yhj/soft/q-e-qe-7.2/bin/pw.x < x0.MA7_md1.in > x0.MA7_md1.out
+#export OMP_NUM_THREADS=1
+#mpiexec /home/yhj/soft/cp2k-2024.1/exe/local/cp2k.psmp -i ./celloptpbe.inp 1>run.out 2>run.err
+#mpiexec /home/yhj/soft/cp2k-2022.1/exe/local/cp2k.psmp celloptpbe.inp 1>run.out 2>run.err

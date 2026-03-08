@@ -1,0 +1,13 @@
+(1)generate the POSCAR through the seperate.py in other directory
+
+(2)prepare the files
+1generate.sh
+INCAR
+KPOINTS
+potcar.sh (POTCAR)
+sub.pbs
+
+(3)generate the input file for run
+sh 1generate.sh
+
+(4)submit the jobs

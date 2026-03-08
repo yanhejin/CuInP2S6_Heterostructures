@@ -1,0 +1,51 @@
+ SYSTEM = for sample slab (R.S) 
+   NPAR = 4
+ Startparameter for this Run:
+   LWAVE =  .FALSE.  do not write WAVECAR file
+   LCHARG = .FALSE.  do not write CHGCAR file
+   #LVTOT  = .TRUE.
+   #ISPIN = 2
+   ISTART = 0
+  # ICHARG = 11
+  # LORBIT = 11      If LORBIT is set the partial charge densities can be found in the OUTCAR
+
+ For DOS  calculation
+#   NEDOS=1300
+#   EMIN = -11.95
+#   EMAX = 3.05   
+    ISMEAR = 0
+    SIGMA = 0.05
+#   RWIGS = 2.65 2.5 2.46  
+#   MAGMOM = 4*0.6
+   # NBANDS = 750       NBANDS = NIONS/2 + NELECT/2
+
+
+ Parallel options  
+   #LPLANE=.TRUE.
+   #LSCALU=.FALSE.
+   #NSIM= 4
+   GGA= PE       PE = PBE, PS = PBEsol
+#  VOSKOWN = 1   Determines whether Vosko-Wilk-Nusair interpolation is used or not.
+   #NCORE = 8
+
+ Electronic Relaxation 1
+   PREC   = High  #Medium=default, Low, High; affects ENMAX, mesh, pspot
+   NELM   = 100    #   max number of electronic steps
+   EDIFF  = 1E-08 #   energy stopping-criterion for electr. iterations
+   ENCUT  = 500 
+#   NELMDL = -8  
+#   LMAXMIX = 4
+
+Ionic Relaxation
+   NSW    = 0   #max number of geometry steps
+   IBRION = 2      #ionic relax: 0-MD 1-quasi-New 2-CG
+   #NFREE = 2
+   POTIM =0.001
+   ISIF = 2
+   ISYM   =   0   # 1 = use symmetry, 0 = no symmetry
+   EDIFFG =-0.0005  #ev/anstrum
+
+ Electronic Relaxation
+#  IALGO  =     48    algorithm (8=CG for small, 48=RMM for big systems)
+   LREAL  =   .F.    real-space projection
+   IVDW  = 11 #DFT-D3

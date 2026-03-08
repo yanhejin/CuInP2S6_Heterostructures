@@ -1,0 +1,1 @@
+phonopy --qe --nac -c cipsfrozenunit.in -p band.conf
